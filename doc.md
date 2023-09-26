@@ -187,6 +187,11 @@ ${string/substring/replacement}  使用$replacement, 来代替第一个匹配的
 ${string//substring/replacement}  使用$replacement, 代替所有匹配的$substring
 ${string/#substring/replacement}  如果$string的前缀匹配$substring, 那么就用$replacement来代替匹配到的$substring
 ${string/%substring/replacement}  如果$string的后缀匹配$substring, 那么就用$replacement来代替匹配到的$substring
+
+${string^}  把变量中的第一个字符换成大写
+${string^^} 把变量中的所有小写字母，全部替换为大写
+${string,}  把变量中的第一个字符换成小写
+${string,,}  把变量中的所有大写字母，全部替换为小写
 ```
 
 # Shell 注释
@@ -2034,4 +2039,70 @@ $/etc/samba
     JOB_NUM=”$(grep  -c  ^processor   /proc/cpuinfo)”
     grep的参数 -c用于统计数量
 ```
+
+## `IFS`
+
+### set 和 env
+
+Shell 脚本中有个变量叫IFS(Internal Field Seprator) ，内部域分隔符。
+
+Shell 的环境变量分为set, env两种，其中 set 变量可以通过 export 工具导入到 env 变量中。
+
+set 是显示设置shell变量，仅在本 shell 中有效；env 是显示设置用户环境变量 ，仅在当前会话中有效。
+
+换句话说，set 变量里包含了env 变量，但set变量不一定都是env 变量。这两种变量不同之处在于变量的作用域不同。显然，env 变量的作用域要大些，它可以在 subshell 中使用。
+
+IFS 是一种 set 变量，当 shell 处理"命令替换"和"参数替换"时，shell 根据 IFS 的值，默认是 space, tab, newline 来拆解读入的变量，然后对特殊字符进行处理，最后重新组合赋值给该变量
+
+### IFS 使用
+
+查看 IFS 的值：
+```shell
+set | grep ^IFS
+# IFS是以空格、制表符、换行符来进行分隔的
+IFS=$' \t\n
+```
+查看IFS的值发现 `env | grep IFS` 为空，而 `set | grep IFS` 有值，说明IFS是局部变量
+
+举例：
+```
+// name.txt
+li li
+lu cy
+lu lu
+na cy
+na na
+ly
+loral
+```
+```shell
+OLDIFS=$IFS
+
+# IFS="\n"
+# IFS=$"\n"
+IFS=$'\n'
+
+for i in $(cat name.txt)
+do
+  echo $i
+done
+
+IFS=$OLDIFS
+```
+
+### IFS 、$ 、单双引号
+
+```shell
+# 这三个赋值看起来都比较像”将换行符赋值给IFS“，但实际上只有最后一种写法才是我想要的结果。
+
+# IFS="\n" //将字符n作为IFS的换行符。
+IFS="\n"
+
+# IFS=$"\n" //这里\n确实通过$转化为了换行符，但仅当被解释时（或被执行时）才被转化为换行符;第一个和第二个是等价的
+IFS=$"\n"
+
+# IFS=$'\n' //这才是真正的换行符。
+IFS=$'\n'
+```
+
 
