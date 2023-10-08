@@ -25,6 +25,51 @@ Shell 编程跟 JavaScript、php 编程一样，只要有一个能编写代码�
 
 # Shell 变量
 
+## 作用域
+
+Shell 变量的作用域可以分为三种：
+* 有的变量只能在函数内部使用，这叫做局部变量（local variable）
+* 有的变量可以在当前 Shell 进程中使用，这叫做全局变量（global variable）
+* 而有的变量还可以在子进程中使用，这叫做环境变量（environment variable）
+
+### 局部变量
+
+Shell 也支持自定义函数，但是 Shell 函数和 C++、Java、C# 等其他编程语言函数的一个
+不同点就是：在 Shell 函数中定义的变量默认也是全局变量，它和在函数外部定义变量拥有
+一样的效果。
+
+要想变量的作用域仅限于函数内部，可以在定义时加上local命令，此时该变量就成了局部变量。
+
+Shell 变量的这个特性和 JavaScript 中的变量是类似的。在 JavaScript 函数内部定义的
+变量，默认也是全局变量，只有加上var关键字，它才会变成局部变量。
+
+### Shell 全局变量
+
+所谓全局变量，就是指变量在当前的整个 Shell 进程中都有效。每个 Shell 进程都有自己的
+作用域，彼此之间互不影响。在 Shell 中定义的变量，默认就是全局变量。
+
+需要强调的是，全局变量的作用范围是当前的 Shell 进程，而不是当前的 Shell 脚本文件，
+它们是不同的概念。打开一个 Shell 窗口就创建了一个 Shell 进程，打开多个 Shell 窗口
+就创建了多个 Shell 进程，每个 Shell 进程都是独立的，拥有不同的进程 ID。在一个
+Shell 进程中可以使用 source 命令执行多个 Shell 脚本文件，此时全局变量在这些脚本
+文件中都有效。
+
+### Shell 环境变量
+
+全局变量只在当前 Shell 进程中有效，对其它 Shell 进程和子进程都无效。如果使用
+export命令将全局变量导出，那么它就在所有的子进程中也有效了，这称为“环境变量”。
+
+环境变量被创建时所处的 Shell 进程称为父进程，如果在父进程中再创建一个新的进程来
+执行 Shell 命令，那么这个新的进程被称作 Shell 子进程。当 Shell 子进程产生时，
+它会继承父进程的环境变量为自己所用，所以说环境变量可从父进程传给子进程。不难理解，
+环境变量还可以传递给孙进程。
+
+注意，两个没有父子关系的 Shell 进程是不能传递环境变量的，并且环境变量只能向下传递
+而不能向上传递，即“传子不传父”。
+
+
+## 定义变量
+
 定义变量时，变量名不加美元符号（$，PHP语言中变量需要），如：
 your_name="runoob.com"
 注意，变量名和等号之间不能有空格，这可能和你熟悉的所有编程语言都不一样。同时，变量名的命名须遵循如下规则： 
@@ -52,6 +97,34 @@ for file in `ls /etc`
 for file in $(ls /etc)
 ```
 以上语句将 /etc 下目录的文件名循环出来。
+
+
+## 声明变量 declare
+
+reference: https://www.gnu.org/software/bash/manual/bash.html#index-declare
+
+通常情况下隐式声明就足够了
+
+语法：
+```
+declare [-aAfFgiIlnrtux] [-p] [name[=value] …]
+
+参数说明：
+-a  每个名称都是一个索引数组变量（请参阅数组）。
+-A  每个名称都是一个关联数组变量（请参阅数组）。
+-f  显示 shell 函数。若不加 -f ，则会显示所有 shell 变量与函数，与执行set指令的
+    效果相同
+-i  该变量将被视为整数；当为变量赋值时执行 算术评估（请参阅Shell 算术）。
+-l  当给变量赋值时，所有大写字符都会转换为小写。大写属性被禁用。
+-n  为每个名称赋予属性nameref，使其成为对另一个变量的名称引用。该另一个变量
+    由name的值定义。对name的所有引用、赋值和属性修改（使用或更改 name 的除外）
+    -n属性本身，是对name的值引用的变量执行的 。nameref 属性不能应用于数组变量。
+-r  将name设置为只读。这些名称不能通过后续赋值语句赋值或取消设置。
+-t  为每个名称赋予属性trace。跟踪函数从调用 shell继承DEBUG和陷阱。RETURNTrace
+    属性对于变量没有特殊含义。
+-u  当为变量赋值时，所有小写字符都将转换为大写字符。小写属性被禁用。
+-x  标记每个名称以通过环境导出到后续命令。
+```
 
 
 ## 使用变量
@@ -192,6 +265,104 @@ ${string^}  把变量中的第一个字符换成大写
 ${string^^} 把变量中的所有小写字母，全部替换为大写
 ${string,}  把变量中的第一个字符换成小写
 ${string,,}  把变量中的所有大写字母，全部替换为小写
+```
+## 内置集合 `set`
+
+[bash 在线手册](https://www.gnu.org/software/bash/manual/bash.html#The-Set-Builtin)
+
+使用set可以设置或取消设置 shell 属性
+
+| 选项     | 说明
+|--|--|
+| -a       | 标记已修改的变量，以供输出至环境变量(意味着’set -a’之后定义的普通变量可在子shell中访问到)。 |
+| -b       | 使被中止的后台程序立刻回报执行状态。                                                        |
+| -C       | 转向所产生的文件无法覆盖已存在的文件。                                                      |
+| -d       | Shell预设会用杂凑表记忆使用过的指令，以加速指令的执行。使用-d参数可取消。                   |
+| -e       | 若指令传回值不等于0，则立即退出shell。                                                      |
+| -f       | 取消使用通配符。                                                                            |
+| -h       | 自动记录函数的所在位置。                                                                    |
+| -H Shell | 可利用"!"加<指令编号>的方式来执行history中记录的指令。                                      |
+| -k       | 指令所给的参数都会被视为此指令的环境变量。                                                  |
+| -l       | 记录for循环的变量名称。                                                                     |
+| -m       | 使用监视模式。                                                                              |
+| -n       | 只读取指令，而不实际执行。                                                                  |
+| -p       | 启动优先顺序模式。                                                                          |
+| -P       | 启动-P参数后，执行指令时，会以实际的文件或目录来取代符号连接。                              |
+| -t       | 执行完随后的指令，即退出shell。                                                             |
+| -u       | 当执行时使用到未定义过的变量，则显示错误信息。                                              |
+| -v       | 显示shell所读取的输入值。                                                                   |
+| -x       | 执行指令前，会先显示该指令及其参数。                                                        |
+
+例如：
+```
+"Exit immediately if a simple command exits with a non-zero status."
+set -e返回值不等于零时立刻退出shell
+set -e返回值不等于零时立刻退出shell
+```
+
+## `IFS`
+
+### set 和 env
+
+Shell 脚本中有个变量叫IFS(Internal Field Seprator) ，内部域分隔符。
+
+Shell 的环境变量分为set, env两种，其中 set 变量可以通过 export 工具导入到 env 变量中。
+
+set 是显示设置shell变量，仅在本 shell 中有效；env 是显示设置用户环境变量 ，仅在当前会话中有效。
+
+换句话说，set 变量里包含了env 变量，但set变量不一定都是env 变量。这两种变量不同之处在于变量的作用域不同。显然，env 变量的作用域要大些，它可以在 subshell 中使用。
+
+IFS 是一种 set 变量，当 shell 处理"命令替换"和"参数替换"时，shell 根据 IFS 的值，默认是 space, tab, newline 来拆解读入的变量，然后对特殊字符进行处理，最后重新组合赋值给该变量
+
+### IFS 使用
+
+查看 IFS 的值：
+```shell
+set | grep ^IFS
+# IFS是以空格、制表符、换行符来进行分隔的
+IFS=$' \t\n
+```
+查看IFS的值发现 `env | grep IFS` 为空，而 `set | grep IFS` 有值，说明IFS是局部变量
+
+举例：
+```
+// name.txt
+li li
+lu cy
+lu lu
+na cy
+na na
+ly
+loral
+```
+```shell
+OLDIFS=$IFS
+
+# IFS="\n"
+# IFS=$"\n"
+IFS=$'\n'
+
+for i in $(cat name.txt)
+do
+  echo $i
+done
+
+IFS=$OLDIFS
+```
+
+### IFS 、$ 、单双引号
+
+```shell
+# 这三个赋值看起来都比较像”将换行符赋值给IFS“，但实际上只有最后一种写法才是我想要的结果。
+
+# IFS="\n" //将字符n作为IFS的换行符。
+IFS="\n"
+
+# IFS=$"\n" //这里\n确实通过$转化为了换行符，但仅当被解释时（或被执行时）才被转化为换行符;第一个和第二个是等价的
+IFS=$"\n"
+
+# IFS=$'\n' //这才是真正的换行符。
+IFS=$'\n'
 ```
 
 # Shell 注释
@@ -2029,80 +2200,9 @@ $readlink -f lt
 $/etc/samba
 ```
 
-## `set`
-
-更改shell特性，+表示打开，-表示关闭。例如：set -e返返回值不等于零时立刻退出shell
-
 ## 获取CPU核心数
 
 ```shell
     JOB_NUM=”$(grep  -c  ^processor   /proc/cpuinfo)”
     grep的参数 -c用于统计数量
 ```
-
-## `IFS`
-
-### set 和 env
-
-Shell 脚本中有个变量叫IFS(Internal Field Seprator) ，内部域分隔符。
-
-Shell 的环境变量分为set, env两种，其中 set 变量可以通过 export 工具导入到 env 变量中。
-
-set 是显示设置shell变量，仅在本 shell 中有效；env 是显示设置用户环境变量 ，仅在当前会话中有效。
-
-换句话说，set 变量里包含了env 变量，但set变量不一定都是env 变量。这两种变量不同之处在于变量的作用域不同。显然，env 变量的作用域要大些，它可以在 subshell 中使用。
-
-IFS 是一种 set 变量，当 shell 处理"命令替换"和"参数替换"时，shell 根据 IFS 的值，默认是 space, tab, newline 来拆解读入的变量，然后对特殊字符进行处理，最后重新组合赋值给该变量
-
-### IFS 使用
-
-查看 IFS 的值：
-```shell
-set | grep ^IFS
-# IFS是以空格、制表符、换行符来进行分隔的
-IFS=$' \t\n
-```
-查看IFS的值发现 `env | grep IFS` 为空，而 `set | grep IFS` 有值，说明IFS是局部变量
-
-举例：
-```
-// name.txt
-li li
-lu cy
-lu lu
-na cy
-na na
-ly
-loral
-```
-```shell
-OLDIFS=$IFS
-
-# IFS="\n"
-# IFS=$"\n"
-IFS=$'\n'
-
-for i in $(cat name.txt)
-do
-  echo $i
-done
-
-IFS=$OLDIFS
-```
-
-### IFS 、$ 、单双引号
-
-```shell
-# 这三个赋值看起来都比较像”将换行符赋值给IFS“，但实际上只有最后一种写法才是我想要的结果。
-
-# IFS="\n" //将字符n作为IFS的换行符。
-IFS="\n"
-
-# IFS=$"\n" //这里\n确实通过$转化为了换行符，但仅当被解释时（或被执行时）才被转化为换行符;第一个和第二个是等价的
-IFS=$"\n"
-
-# IFS=$'\n' //这才是真正的换行符。
-IFS=$'\n'
-```
-
-
