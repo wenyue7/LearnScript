@@ -1471,6 +1471,16 @@ done
 This is a string
 ```
 
+另一种for循环的语法：
+```
+max=10
+for (( i=0; i <= $max; ++i ))
+do
+    echo "$i"
+done
+```
+
+
 ## while 语句
 
 while循环用于不断执行一系列命令，也用于从输入文件中读取数据；命令通常为测试条件。其格式为：
