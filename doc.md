@@ -2242,3 +2242,50 @@ $/etc/samba
     JOB_NUM=”$(grep  -c  ^processor   /proc/cpuinfo)”
     grep的参数 -c用于统计数量
 ```
+
+
+## `getopts`
+
+getopts后面跟的字符串就是参数列表，每个字母代表一个选项
+* 如果字母后面跟一个:，则就表示这个选项还会有一个值
+* 如果字母后面没有跟随:，则该字母就是开关型选项，不需要指定值
+
+举例：
+```shell
+func() {
+    echo "Usage:"
+    echo "  test.sh [-j S_DIR] [-m D_DIR]"
+    echo ""
+    echo "Description:"
+    echo "  S_DIR,the path of source."
+    echo "  D_DIR,the path of destination."
+    exit -1
+}
+
+upload="false"
+
+while getopts 'h:j:m:u' OPT
+do
+    case $OPT in
+        j)
+            S_DIR="$OPTARG"
+            ;;
+        m)
+            D_DIR="$OPTARG"
+            ;;
+        u)
+            upload="true"
+            ;;
+        h)
+            func
+            ;;
+        ?)
+            func
+            ;;
+    esac
+done
+
+echo $S_DIR
+echo $D_DIR
+echo $upload
+```
