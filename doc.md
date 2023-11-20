@@ -1423,6 +1423,36 @@ fi
 两个数字相等!
 ```
 
+### 多条件处理
+
+如果多个判断条件需要做与或非：
+```shell
+val1="1"
+val2="2"
+
+if [[ ${val1} == "1" ]] && [[ ${val2} == "1" ]];then
+    echo "ok"
+else
+    echo "not ok"
+fi
+
+
+if [[ ${val1} == "1" ]] || [[ ${val2} == "1" ]];then
+    echo "ok"
+else
+    echo "not ok"
+fi
+
+
+if !([[ ${val1} == "1" ]] || [[ ${val2} == "1" ]]);then
+    echo "ok"
+else
+    echo "not ok"
+fi
+```
+
+这里中括号用一层或者用两层都可以，一层中括号和两层中括号的区别可以参考常用括号整理的章节
+
 ## for 循环
 
 与其他编程语言类似，Shell支持for循环。
