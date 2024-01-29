@@ -626,6 +626,31 @@ $ ./test.sh
 lengthn=${#array_name[n]}
 ```
 
+## 复制数组
+```
+array_a=(1 2 3)
+array_b=(a b c)
+
+echo ${array_a[@]}
+echo ${array_b[@]}
+
+# method 1，复制数组到另一个数组，最后得到的是一个新的数组
+array_new=("${array_b[@]}")
+
+echo "method 1 array_new: "${array_new[@]}
+echo "method 1 array_new: "${array_new[0]}
+
+# method 2，复制数组到一个长字符串，最后得到的是一个长字符串
+select="a"
+# eval array_new2='$'{array_${select}[@]}
+# 只要加上括号，就是数组赋值
+# eval array_new2=('$'{array_${select}[@]})
+
+echo "method 2 array_new2: "${array_new2}
+echo "method 2 array_new2: "${array_new2[@]}
+echo "method 2 array_new2: "${array_new2[0]}
+```
+
 # Shell 基本运算符
 
 Shell 和其他编程语言一样，支持多种运算符，包括：
