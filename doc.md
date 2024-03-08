@@ -651,6 +651,21 @@ echo "method 2 array_new2: "${array_new2[@]}
 echo "method 2 array_new2: "${array_new2[0]}
 ```
 
+## 遍历数组
+```
+str_arr=("a" "b c")
+
+for ((i = 0; i < ${#str_arr[@]}; i++))
+do
+	echo ${str_arr[${i}]}
+done
+```
+执行结果如下:
+```
+a
+b c
+```
+
 # Shell 基本运算符
 
 Shell 和其他编程语言一样，支持多种运算符，包括：
