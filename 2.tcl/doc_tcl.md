@@ -389,20 +389,20 @@ puts $myVariable
 
 | 命令 | 说明 |
 |--|--|
-| compare string1 string2    | 按字典顺序比较 string1 和 string2。 如果相等则返回 0，如果 string1 在 string2 之前则返回 -1，否则返回 1
-| first string1 string2      | 返回 string1 在 string2 中第一次出现的索引。 如果没有找到，则返回-1
-| index string index         | 返回索引处的字符
-| last string1 string2.      | 返回 string1 在 string2 中最后一次出现的索引。 如果没有找到，则返回-1
-| length string              | 返回字符串的长度
-| match pattern string       | 如果字符串与模式匹配，则返回 1
-| range string index1 index2 | 返回字符串中从索引 1 到索引 2 的字符范围
-| tolower string             | 返回小写字符串
-| toupper string             | 返回大写字符串
-| trim string ?trimcharacters?      | 删除字符串两端的修剪字符。 默认的修剪字符是空格
-| trimleft string ?trimcharacters?  | 删除字符串左开头的修剪字符。 默认的修剪字符是空格
-| trimright string ?trimcharacters? | 删除字符串左端的修剪字符。 默认的修剪字符是空格
-| wordend findstring index          | 返回包含索引处字符的单词之后的字符在 findstring 中的索引
-| wordstart findstring index        | 返回包含索引处字符的单词中第一个字符在 findstring 中的索引
+| compare string1 string2    | 按字典顺序比较 string1 和 string2。 如果相等则返回 0，如果 string1 在 string2 之前则返回 -1，否则返回 1 |
+| first string1 string2      | 返回 string1 在 string2 中第一次出现的索引。 如果没有找到，则返回-1 |
+| index string index         | 返回索引处的字符 |
+| last string1 string2.      | 返回 string1 在 string2 中最后一次出现的索引。 如果没有找到，则返回-1 |
+| length string              | 返回字符串的长度 |
+| match pattern string       | 如果字符串与模式匹配，则返回 1 |
+| range string index1 index2 | 返回字符串中从索引 1 到索引 2 的字符范围 |
+| tolower string             | 返回小写字符串 |
+| toupper string             | 返回大写字符串 |
+| trim string ?trimcharacters?      | 删除字符串两端的修剪字符。 默认的修剪字符是空格 |
+| trimleft string ?trimcharacters?  | 删除字符串左开头的修剪字符。 默认的修剪字符是空格 |
+| trimright string ?trimcharacters? | 删除字符串左端的修剪字符。 默认的修剪字符是空格 |
+| wordend findstring index          | 返回包含索引处字符的单词之后的字符在 findstring 中的索引 |
+| wordstart findstring index        | 返回包含索引处字符的单词中第一个字符在 findstring 中的索引 |
 
 
 举例：
@@ -1608,6 +1608,91 @@ file3
 | %T | 24 小时制时间，带秒 |
 | %Z | 时区名称，例如 GMT、IST、EST 等 |
 
+
+## info 命令
+
+info 是一个内置命令，提供有关 Tcl 解释器状态的信息。
+
+reference:  [info](https://wiki.tcl-lang.org/page/info)
+
+* `info option ?arg arg ...?`
+
+* `info args procname`
+
+* `info body procname`
+
+* `info class subcommand class …`
+
+* `info cmdcount`
+
+* `info commands ?pattern?`
+
+* `info complete script`
+
+* `info coroutine`
+
+* `info default procname arg varname`
+
+* `info errorstack`
+
+* `info exists varName`
+
+如果名为varName的变量根据名称解析规则存在于当前上下文中，并且已通过给定值进行定义，
+则返回1 ，否则返回0。对于存在但未定义的变量，info contains返回0 。
+
+demo:
+```
+info exists a
+# -> 0
+set a 1
+# -> 1
+info exists a
+# -> 1
+info exists b
+# -> 0
+set b(2) 2
+# -> 2
+info exists b
+# -> 1
+info exists b(1)
+# -> 0
+info exists b(2)
+# -> 1
+info exists $a
+# -> 0
+```
+
+* `info frame ?number?`
+
+* `info functions pattern`
+
+* `info globals ?pattern?`
+
+* `info hostname`
+
+* `info level ?number?`
+
+* `info library`
+
+* `info loaded ?interp?`
+
+* `info locals ?pattern?`
+
+* `info nameofexecutable`
+
+* `info object subcommand object …`
+
+* `info patchlevel`
+
+* `info procs ?pattern?`
+
+* `info script ?filename?`
+
+* `info sharedlibextension`
+
+* `info tclversion`
+
+* `info vars ?pattern?`
 
 
 # 正则表达式
