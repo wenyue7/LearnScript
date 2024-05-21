@@ -1,7 +1,26 @@
-[跟我一起写Makefile](https://seisman.github.io/how-to-write-makefile/introduction.html)
+references:  
+[跟我一起写Makefile](https://seisman.github.io/how-to-write-makefile/introduction.html)  
+[Makefile由浅入深--教程、干货](https://zhuanlan.zhihu.com/p/47390641)
 
 # makefile 介绍
+
+## Makefile 组成
+
+Makefile里主要包含了五个东西：变量定义、显式规则、隐晦规则、文件指示和注释。
+1. 变量的定义。在Makefile中我们要定义一系列的变量，变量一般都是字符串，这个有点像
+   C语言中的宏，当Makefile被执行时，其中的变量都会被扩展到相应的引用位置上。
+2. 显式规则。显式规则说明了，如何生成一个或多的的目标文件。这是由Makefile的书写者
+   明显指出，要生成的文件，文件的依赖文件，生成的命令。 刚才写的疑似shell脚本的
+   Makefile全部都是显示规则。
+3. 隐晦规则。由于我们的make有自动推导的功能，所以隐晦的规则可以让我们比较粗糙地
+   简略地书写Makefile，这是由make所支持的。
+4. 文件指示。其包括了三个部分，一个是在一个Makefile中引用另一个Makefile，就像C语言
+   中的include一样。
+5. 注释。Makefile中只有行注释，和UNIX的Shell脚本一样，其注释是用“#”字符，这个就像
+   C/C++中的“//”一样。如果你要在你的Makefile中使用“#”字符。
+
 ## makefile的规则
+
 在讲述这个makefile之前，还是让我们先来粗略地看一看makefile的规则。
 
 ```makefile
@@ -2532,6 +2551,42 @@ lib : foo.o bar.o lose.o win.o
 需要知道这个步骤。例如有一个模式 e%t ，文件 src/eat 匹配于该模式，于是 src/a
 就是其“茎”，如果这个模式定义在依赖目标中，而被依赖于这个模式的目标中又有个模式
 c%r ，那么，目标就是 src/car 。（“茎”被传递）
+
+举例：
+```Makefile
+INCL=-I${HOME}/incl
+BIN=$(HOME)/bin
+OBJ1=hellocpp.o
+OBJ2=hello.o
+
+.SUFFIXES: .cpp .c
+.cpp.o:
+	g++ ${INCL} -c $<
+
+.c.o:
+	gcc ${INCL} -c $<
+
+all: hellocpp hello
+
+#C++编译
+hellocpp:${OBJ1}
+	@echo "============开始编译============"
+	g++ -o $@ $?
+	@rm -f ${OBJ1}
+	@mv $@ ${BIN}
+	@echo "============编译结束============"
+	@echo ""
+
+#C编译
+hello:${OBJ2}
+	@echo "============开始编译============"
+	gcc -o $@ $?
+	@rm -f ${OBJ2}
+	@mv $@ ${BIN}
+	@echo "============编译结束============"
+	@echo ""
+```
+命令前加@，表示当前命令不显示
 
 ### 重载内建隐含规则
 你可以重载内建的隐含规则（或是定义一个全新的），例如你可以重新构造和内建隐含规则

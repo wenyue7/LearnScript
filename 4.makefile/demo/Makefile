@@ -49,8 +49,8 @@ TARGET2 = test2
 
 
 
-all : $(TARGETs)
 .PHONY : all
+all : $(TARGETs)
 
 $(TARGET) : $(OBJs)
 	gcc -o $@ $^
@@ -64,8 +64,8 @@ $(TARGET2) : $(OBJs2)
 $(OBJs2) :
 	gcc $(MCRODEF) -c $(subst .o,.c,$@) -o $@
 
+.PHONY : clean
 clean :
 	-rm $(OBJs)
 	-rm $(OBJs2)
 	-rm $(TARGETs)
-.PHONY : clean
