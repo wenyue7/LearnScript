@@ -1,0 +1,11 @@
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
+
+#define Demo_VERSION_MAJOR @Demo_VERSION_MAJOR@
+#define Demo_VERSION_MINOR @Demo_VERSION_MINOR@
+
+#define VER_INFO @VERSION_HISTORY@
+
+#cmakedefine USE_MYMATH  // 对应 CMakeLists.txt 中宏的状态
+
+#endif /* __CONFIG_H__ */
