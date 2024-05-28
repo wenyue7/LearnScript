@@ -238,7 +238,7 @@ EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} log -1 --format=%H
 )
 # 写入头文件宏定义的版本字符串，日期和 Hash
 FILE(WRITE ${PROJECT_BINARY_DIR}/git_version.h
-    "#define GIT_VERSION \"${GIT_REPO_VERSION}\"\n#define GIT_AUTHOR \"${GIT_REPO_AUTHOR}\"\n#define GIT_DATE \"${GIT_REPO_DATE}\"\n#define GIT_HASH \"${GIT_REPO_HASH}\"\n"
+    "#define GIT_VER \"${GIT_REPO_VERSION}\"\n#define GIT_AUTHOR \"${GIT_REPO_AUTHOR}\"\n#define GIT_DATE \"${GIT_REPO_DATE}\"\n#define GIT_HASH \"${GIT_REPO_HASH}\"\n"
 )
 # 包含引用目录，源文件可以直接用 #include "git_version.h" 包含
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
@@ -269,6 +269,72 @@ CONFIGURE_FILE (
     "${PROJECT_BINARY_DIR}/config.h"
     )
 
+
+
+#-- ver 3 借助config 生成多条log
+SET(VERSION_CNT         0)
+SET(VERSION_MAX_CNT     9)
+SET(VERSION_INFO        "\"unknown mpp version for missing VCS info\"")
+FOREACH(CNT RANGE ${VERSION_MAX_CNT})
+    SET(VERSION_HISTORY_${CNT} "NULL")
+ENDFOREACH(CNT)
+
+IF(EXISTS "${PROJECT_SOURCE_DIR}/../../.git")
+    find_package(Git)
+    IF(GIT_FOUND)
+        # get current version info
+        SET(GIT_LOG_FORMAT "%h author: %<|(30)%an %cd %s")
+
+        EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} log -1 --oneline --date=short --pretty=format:${GIT_LOG_FORMAT}
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            OUTPUT_VARIABLE EXEC_OUT
+            ERROR_VARIABLE EXEC_ERROR
+            RESULT_VARIABLE EXEC_RET
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_STRIP_TRAILING_WHITESPACE)
+
+        IF(NOT EXEC_RET)
+            SET(VERSION_INFO ${EXEC_OUT})
+            MESSAGE(STATUS "current version:")
+            MESSAGE(STATUS "${VERSION_INFO}")
+            STRING(REPLACE "\"" "\\\"" VERSION_INFO ${VERSION_INFO})
+            SET(VERSION_INFO "\"${VERSION_INFO}\"")
+        ELSE(NOT EXEC_RET)
+            MESSAGE(STATUS "git ret ${EXEC_RET}")
+            MESSAGE(STATUS "${EXEC_ERROR}")
+        ENDIF(NOT EXEC_RET)
+
+        SET(GIT_LOG_FORMAT "%h author: %<|(30)%an %cd %s %d")
+
+        # get history version information
+        # setup logs
+        MESSAGE(STATUS "git version history:")
+        foreach(CNT RANGE ${VERSION_MAX_CNT})
+            EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} log HEAD~${CNT} -1 --oneline --date=short --pretty=format:${GIT_LOG_FORMAT}
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+                OUTPUT_VARIABLE EXEC_OUT
+                ERROR_VARIABLE EXEC_ERROR
+                RESULT_VARIABLE EXEC_RET
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+                ERROR_STRIP_TRAILING_WHITESPACE)
+
+            IF(NOT EXEC_RET)
+                SET(VERSION_LOG ${EXEC_OUT})
+                STRING(REPLACE "\"" "\\\"" VERSION_LOG ${VERSION_LOG})
+                MESSAGE(STATUS ${VERSION_LOG})
+                SET(VERSION_HISTORY_${CNT} "\"${VERSION_LOG}\"")
+                math(EXPR VERSION_CNT "${VERSION_CNT}+1")
+            ENDIF(NOT EXEC_RET)
+        ENDFOREACH(CNT)
+        MESSAGE(STATUS "total ${VERSION_CNT} git version recorded")
+    ENDIF(GIT_FOUND)
+ENDIF(EXISTS "${PROJECT_SOURCE_DIR}/../../.git")
+
+CONFIGURE_FILE(
+    "${PROJECT_SOURCE_DIR}/config.h.in"
+    "${PROJECT_BINARY_DIR}/config.h"
+    @ONLY
+)
 # ============================================================================== add git info end
 
 # ============================================================================== cmake 脚本

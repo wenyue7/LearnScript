@@ -16,15 +16,36 @@
   #include "mathFunctions.h"
 #endif
 
+#define DUMP_GIT_VER \
+    do { \
+        printf("%s\n", GIT_VER_HIST_0); \
+        printf("%s\n", GIT_VER_HIST_1); \
+        printf("%s\n", GIT_VER_HIST_2); \
+        printf("%s\n", GIT_VER_HIST_3); \
+        printf("%s\n", GIT_VER_HIST_4); \
+        printf("%s\n", GIT_VER_HIST_5); \
+        printf("%s\n", GIT_VER_HIST_6); \
+        printf("%s\n", GIT_VER_HIST_7); \
+        printf("%s\n", GIT_VER_HIST_8); \
+        printf("%s\n", GIT_VER_HIST_9); \
+    } while (0);
+
 int main(int argc, char* argv[])
 {
-    int tmp;
+    double base;
+    int exponent;
+
+    printf("git version method 1\n");
     printf("version: %s\n", GIT_VERSION);
     printf("author:  %s\n", GIT_AUTHOR);
     printf("date:    %s\n", GIT_DATE);
     printf("hash:    %s\n", GIT_HASH);
     printf("\n");
+    printf("git version method 2\n");
     printf("ver_log: %s\n", VER_INFO);
+    printf("\n");
+    printf("git version method 3\n");
+    DUMP_GIT_VER;
     printf("\n");
 
 #ifdef MACRO_MAIN
@@ -39,8 +60,8 @@ int main(int argc, char* argv[])
         printf("Usage: %s base exponent \n", argv[0]);
         return 1;
     }
-    double base = atof(argv[1]);
-    int exponent = atoi(argv[2]);
+    base = atof(argv[1]);
+    exponent = atoi(argv[2]);
 
 #ifndef USE_MYMATH
     printf("Now we use the standard library. \n");

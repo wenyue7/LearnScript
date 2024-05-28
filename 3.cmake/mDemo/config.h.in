@@ -4,7 +4,22 @@
 #define Demo_VERSION_MAJOR @Demo_VERSION_MAJOR@
 #define Demo_VERSION_MINOR @Demo_VERSION_MINOR@
 
+/* method 2 */
 #define VER_INFO @VERSION_HISTORY@
+
+/* method 3 */
+#define	GIT_VERSION             @VERSION_INFO@
+#define	GIT_VER_HIST_CNT        @VERSION_CNT@
+#define	GIT_VER_HIST_0          @VERSION_HISTORY_0@
+#define	GIT_VER_HIST_1          @VERSION_HISTORY_1@
+#define	GIT_VER_HIST_2          @VERSION_HISTORY_2@
+#define	GIT_VER_HIST_3          @VERSION_HISTORY_3@
+#define	GIT_VER_HIST_4          @VERSION_HISTORY_4@
+#define	GIT_VER_HIST_5          @VERSION_HISTORY_5@
+#define	GIT_VER_HIST_6          @VERSION_HISTORY_6@
+#define	GIT_VER_HIST_7          @VERSION_HISTORY_7@
+#define	GIT_VER_HIST_8          @VERSION_HISTORY_8@
+#define	GIT_VER_HIST_9          @VERSION_HISTORY_9@
 
 #cmakedefine USE_MYMATH  // 对应 CMakeLists.txt 中宏的状态
 
