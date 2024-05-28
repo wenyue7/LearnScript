@@ -73,23 +73,51 @@ MESSAGE(STATUS "-------- SET/GET ENV END --------")
 
 MESSAGE(STATUS "-------- RXEC SHELL CMD --------")
 
+# 使用 ALL 关键字意味着这个自定义目标将作为默认构建目标的一部分被执行
+# 如果只想在显式请求时才运行这个目标，可以省略 ALL
+# 显式执行的方法为：执行cmake之后，显式执行：make my_custom_target
+ADD_CUSTOM_TARGET(my_custom_target ALL
+    # 当这个目标被构建时，会执行下面的 COMMAND
+    COMMAND ${CMAKE_COMMAND} -E echo "My custom target is running!"
+    # 这是一个可选的 COMMENT，它将在构建时显示在控制台中
+    COMMENT "Running a custom target"
+    # VERBATIM 选项告诉 CMake 不要对 COMMAND 进行任何解释或转义
+    VERBATIM
+)
+# 如果想要让这个自定义目标成为默认构建目标（即，当只运行 'make' 或 'cmake --build .' 时），
+# 可以添加一个 ALL 依赖。但注意，这通常不是推荐的做法，除非自定义目标是项目构建流程
+# 的核心部分。这个方法不好用，可能是cmake不支持，需要的话建议直接在 add_custim_target
+# 中添加 ALL
+# add_dependencies(ALL my_custom_target)
+
+
+# add_custom_command 在 CMake 中通常用于向特定的目标（如可执行文件、库或自定义目标）
+# 添加自定义构建规则。
+# 在 add_custom_command 的使用中，不能同时指定 TARGET 和 OUTPUT ，除非它们是在
+# add_custom_command 的不同参数中使用的。在 add_custom_command 的上下文中，TARGET
+# 参数通常用于将自定义命令与现有的目标（如可执行文件或库）关联起来，而 OUTPUT 参数
+# 则用于指定自定义命令生成的输出文件。
 # 如果这个自定义命令是某个目标的一部分，你需要将它添加到该目标的依赖中
 # 例如，你可以使用 add_dependencies() 来添加一个依赖
-# 这个不好用，不知道是不是cmake不支持，暂不深究，可以使用add_custom_target
-add_custom_command(
-    OUTPUT my_output_file.txt
-    COMMAND echo "from add_custom_command" >> customecmd.txt
-    COMMENT "Running a shell command"
+ADD_CUSTOM_COMMAND(
+    COMMAND ${CMAKE_COMMAND} -E echo "My custom command(TARGET) is running!"
+    COMMENT "Running a custom command(TARGET)"
     VERBATIM
+    # 将此自定义命令与 generate_header 目标关联起来
+    TARGET my_custom_target
 )
 
-# 使用 ALL 关键字意味着这个自定义目标将作为默认构建目标的一部分被执行
-# 你可以省略 ALL 如果你只想在显式请求时才运行这个目标
-add_custom_target(run_my_script ALL
-    COMMAND echo "from add_custom_target" >> customecmd.txt
-    COMMENT "Running a shell command"
+SET(M_CUSTOM_FILE ${CMAKE_CURRENT_BINARY_DIR}/custom_command.h)
+# FILE(WRITE ${M_CUSTOM_FILE} "")
+ADD_CUSTOM_COMMAND(
+    OUTPUT ${M_CUSTOM_FILE}
+    COMMAND ${CMAKE_COMMAND} -E echo "My custom command(OUTPUT) is running!" # > ${M_CUSTOM_FILE}
+    COMMENT "Running a custom command(OUTPUT)"
     VERBATIM
 )
+# 创建一个自定义目标，该目标依赖于生成的文件
+ADD_CUSTOM_TARGET(generate_file ALL DEPENDS ${M_CUSTOM_FILE})
+
 
 MESSAGE(STATUS "-------- RXEC SHELL CMD END --------")
 
