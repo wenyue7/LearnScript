@@ -8,6 +8,10 @@ PROJECT(mDemoPrj)
 SET (Demo_VERSION_MAJOR 3)
 SET (Demo_VERSION_MINOR 6)
 
+STRING(TIMESTAMP current_year "%Y" UTC)
+STRING(TIMESTAMP current_time "%Y-%m-%d %H:%M:%S")
+MESSAGE(STATUS "current time: ${current_time}")
+
 # 可选的<mode>关键字确定消息的类型，这会影响消息的处理方式：
 # FATAL_ERROR:        CMake错误，停止处理和生成。
 # SEND_ERROR:         CMake错误，继续处理，但跳过生成。
@@ -255,7 +259,7 @@ EXECUTE_PROCESS(COMMAND ${GIT_EXECUTABLE} log -1 --oneline --date=short --pretty
 if (NOT EXEC_RET)
     SET(VERSION_LOG ${EXEC_OUT})
     STRING(REPLACE "\"" "\\\"" VERSION_LOG ${VERSION_LOG})
-    MESSAGE(STATUS "git version: "${VERSION_LOG})
+    MESSAGE(STATUS "git version: " ${VERSION_LOG})
     SET(VERSION_HISTORY "\"${VERSION_LOG}\"")
 endif()
 
