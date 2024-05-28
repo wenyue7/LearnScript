@@ -44,7 +44,7 @@ MESSAGE(STATUS "-------- MAIN CMAKELISTS MSG --------")
 # CMAKE_CURRENT_LIST_FILE: 输出调用这个变量的 CMakeLists.txt 的完整路径
 # CMAKE_CURRENT_LIST_LINE：输出这个变量所在的行
 # CMAKE_CURRENT_SOURCE_DIR：当前处理的 CMakeLists.txt 所在的路径
-# CMAKE_CURRRENT_BINARY_DIR：如果是 in-source 编译，它跟 CMAKE_CURRENT_SOURCE_DIR 
+# CMAKE_CURRENT_BINARY_DIR：如果是 in-source 编译，它跟 CMAKE_CURRENT_SOURCE_DIR
 #                            一致，如果是 out-of-source编译，他指的是 target 编译目录。
 # CMAKE_CURRENT_BINARY_DIR 和 CMAKE_CURRENT_SOURCE_DIR 是面向 CMakeLists.txt
 #     文件的源和目标根目录，而不像 PROJECT_SOURCE_DIR 和 PROJECTE_BINARY_DIR
