@@ -71,7 +71,7 @@ SET(ENV{HOME} "new home name")
 MESSAGE(STATUS "    after set, HOME dir: $ENV{HOME}")
 MESSAGE(STATUS "-------- SET/GET ENV END --------")
 
-MESSAGE(STATUS "-------- RXEC SHELL CMD --------")
+MESSAGE(STATUS "-------- EXEC SHELL CMD --------")
 
 # 使用 ALL 关键字意味着这个自定义目标将作为默认构建目标的一部分被执行
 # 如果只想在显式请求时才运行这个目标，可以省略 ALL
@@ -119,7 +119,13 @@ ADD_CUSTOM_COMMAND(
 ADD_CUSTOM_TARGET(generate_file ALL DEPENDS ${M_CUSTOM_FILE})
 
 
-MESSAGE(STATUS "-------- RXEC SHELL CMD END --------")
+MESSAGE(STATUS "-------- EXEC SHELL CMD END --------")
+
+
+MESSAGE(STATUS "-------- CREATE DIR --------")
+# 创建一个目录
+FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/my_directory)
+MESSAGE(STATUS "-------- CREATE DIR END --------")
 
 # ============================================================================== base options end
 
