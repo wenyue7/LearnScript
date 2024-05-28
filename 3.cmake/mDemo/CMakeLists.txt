@@ -178,6 +178,10 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 #     @ONLY           限制替换， 仅仅替换 @VAR@ 变量， 不替换 ${VAR} 变量
 #     NEWLINE_STYLE   指定输入文件的新行格式， 例如：Unix 中使用的是 \n, windows 中使用的 \r\n
 # **注意: ** COPYONLY 和 NEWLINE_STYLE 是冲突的，不能同时使用；
+#         CONFIGURE_FILE可以调用一次，也可以调用多次，多次调用的时候，如果变量有修改，会使用
+#         最后调用 CONFIGURE_FILE 时的变量，也可以理解为，只有最后一次调用 CONFIGURE_FILE 是
+#         有效的。
+#
 # 加入一个配置头文件，用于处理 CMake 对源码的设置
 # configure_file 命令用于加入一个配置头文件 config.h ，这个文件由 CMake 从 config.h.in 生成，
 #                通过这样的机制，将可以通过预定义一些参数和变量来控制代码的生成。
@@ -350,7 +354,7 @@ CONFIGURE_FILE(
 #     - .cmake文件是一个'模块(module)文件',可以被'include'到CMakeLists.txt中
 # 注意：cmake'脚本'不要包含'工程之类'的信息 -->例如:add_subdirectory()、CMAKE_CURRENT_之类的
 #       cmake'不要'调用CMakeLists.txt
-# 
+#
 # (2) .cmake模块文件被加载的时机是在CMakeLists.txt 中
 #     - include(module_name|file)
 #     - find_package(module_name)
@@ -365,7 +369,7 @@ CONFIGURE_FILE(
 # 2）绝对路径(建议): 一般我们会将'cmake'文件放到cmake目录下,所以前缀一般是：
 #    CMAKE_CURRENT_SOURCE_DIR/cmake/file
 # 注意：这里的'file'文件,必须以'.cmake'结尾
-# 
+#
 # 模块文件(module)
 # 1）首先搜索'Cmake builtin module directory' -->'cmake 内置的module目录'-->'centos7 /usr/share/cmake/MOdules/'
 # 2）找不到'再搜索'-->'CMAKE_MODULE_PATH'
@@ -378,6 +382,10 @@ CONFIGURE_FILE(
 
 # 同样需要加在 ADD_SUBDIRECTORY 之前才能传递到子目录
 INCLUDE("src/main.cmake")
+
+# 自定义函数
+my_custom_function(MY_VARIABLE "Hello, CMake! This my custom function")
+message(STATUS "MY_VARIABLE: ${MY_VARIABLE}")
 
 # ============================================================================== cmake 脚本 end
 
