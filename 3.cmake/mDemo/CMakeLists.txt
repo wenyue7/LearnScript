@@ -122,10 +122,30 @@ ADD_CUSTOM_TARGET(generate_file ALL DEPENDS ${M_CUSTOM_FILE})
 MESSAGE(STATUS "-------- EXEC SHELL CMD END --------")
 
 
-MESSAGE(STATUS "-------- CREATE DIR --------")
+MESSAGE(STATUS "-------- FILE OPT --------")
 # 创建一个目录
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/my_directory)
-MESSAGE(STATUS "-------- CREATE DIR END --------")
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/my_directory/file_opt.txt "write to file\n")
+FILE(READ ${CMAKE_CURRENT_BINARY_DIR}/my_directory/file_opt.txt READ_MSG)
+MESSAGE(STATUS "READ FROM FILE: ${READ_MSG}")
+# FILE(APPEND filename "String to append")
+# FILE(COPY source destination)
+# FILE(RENAME source destination)
+# FILE(REMOVE [file1 ...])
+# FILE(REMOVE_RECURSE [dir1 ...])
+# # 执行系统命令
+# FILE(EXPR output variable operation)
+# # 获取文件大小
+# FILE(SIZE filename variable)
+# # 获取文件权限
+# FILE(GET_RUNTIME_DEPENDENCIES variable dependencies)
+# # 遍历目录
+# FILE(GLOB variable [RELATIVE path] [globbing expressions]...)
+# FILE(GLOB_RECURSE variable [RELATIVE path] [globbing expressions]...)
+# # 创建列表文件
+# FILE(CONFIGURE OUTPUT output_file CONTENT content)
+
+MESSAGE(STATUS "-------- FILE OPT END --------")
 
 MESSAGE(STATUS "-------- DIRPROPERTY --------")
 # GET_DIRECTORY_PROPERTY 获取的常见目录属性：
