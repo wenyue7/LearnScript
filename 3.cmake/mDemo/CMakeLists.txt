@@ -250,6 +250,97 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 ###############################################
 
 ###############################################
+# work flow control
+###############################################
+
+# 在 CMake 中，进行条件判断的方法主要有以下几种：
+# 1. 数字比较：
+#     EQUAL：判断两个数字是否相等。
+#     LESS：判断左边的数字是否小于右边的数字。
+#     GREATER：判断左边的数字是否大于右边的数字。
+#     LESS_EQUAL：判断左边的数字是否小于或等于右边的数字。
+#     GREATER_EQUAL：判断左边的数字是否大于或等于右边的数字。
+# 2. 字符串比较：
+#     STREQUAL：判断两个字符串是否相等。
+#     STRLESS：判断左边的字符串是否小于右边的字符串。
+#     STRGREATER：判断左边的字符串是否大于右边的字符串。
+#     STRLESS_EQUAL：判断左边的字符串是否小于或等于右边的字符串。
+#     STRGREATER_EQUAL：判断左边的字符串是否大于或等于右边的字符串。
+#     MATCHES：判断字符串是否匹配正则表达式。
+# 3. 布尔值判断：
+#     TRUE：判断条件是否为真。
+#     FALSE：判断条件是否为假。
+# 4. 文件系统判断：
+#     EXISTS：判断文件或目录是否存在。
+#     IS_DIRECTORY：判断给定路径是否是目录。
+#     IS_SYMLINK：判断给定路径是否是符号链接。
+#     IS_ABSOLUTE：判断路径是否是绝对路径。
+# 5. 变量存在性判断：
+#     DEFINED：判断变量是否已定义。
+# 6. 复合条件：
+#     AND：逻辑与操作。
+#     OR：逻辑或操作。
+#     NOT：逻辑非操作。
+# 7. 版本号比较：
+#     VERSION_LESS：判断版本号是否小于。
+#     VERSION_GREATER：判断版本号是否大于。
+#     VERSION_EQUAL：判断版本号是否等于。
+#     VERSION_LESS_EQUAL：判断版本号是否小于或等于。
+#     VERSION_GREATER_EQUAL：判断版本号是否大于或等于。
+# 8. 变量内容判断：
+#     IN_LIST：判断变量是否在列表中。
+
+# 设置一个变量用于测试
+SET(TEST_VARIABLE "Hello")
+
+# if-else 条件语句示例
+IF(TEST_VARIABLE STREQUAL "Hello")
+    MESSAGE(STATUS "The variable is 'Hello'.")
+ELSEIF(TEST_VARIABLE STREQUAL "Hi")
+    MESSAGE(STATUS "The variable is 'Hi'.")
+ELSE()
+    MESSAGE(STATUS "The variable is not 'Hello' or 'Hi'.")
+ENDIF()
+
+# FOREACH中的条件书写规则：(variableName IN [LISTS | ITEMS] list)
+# 其中：ist 是要遍历的列表。关键字 LISTS 指示 list 是一个列表变量，而 ITEMS 指示
+#       list 是一个由空格或分号分隔的元素列表。如果省略 LISTS 或 ITEMS，CMake 会
+#       根据list 的内容自动选择。
+#
+# FOREACH中也可以是哟给你RANGE创建的数字序列：variableName RANGE [start] stop [step]
+# 其中：start 是范围的起始数字，stop 是范围的结束数字（包括在内），step 是可选的步长，
+#       默认为 1。如果指定了 step，则 variableName 将按照指定的步长增加。
+#       如果没有start，只有stop，这是数值遍历范围为0-stop
+
+# foreach 循环示例
+# SET(M_LIST 1 2 3 4 5)
+# FOREACH(ITEM IN LISTS M_LIST)
+FOREACH(ITEM RANGE 0 5)
+    IF(ITEM EQUAL 3)
+        MESSAGE(STATUS "Skipping item ${ITEM}.")
+        CONTINUE() # 跳过当前迭代
+    ENDIF()
+    IF(ITEM GREATER 4)
+        MESSAGE(STATUS "Breaking out of loop item ${ITEM}.")
+        BREAK() # 提前退出循环
+    ENDIF()
+    MESSAGE(STATUS "Processing item ${ITEM}.")
+ENDFOREACH()
+
+
+# while 循环示例
+SET(I 0)
+WHILE(I LESS 5)
+    MESSAGE(STATUS "I is ${I}")
+    MATH(EXPR I "${I} + 1") # 增加 I 的值
+ENDWHILE()
+
+
+###############################################
+# work flow control end
+###############################################
+
+###############################################
 # 表达式
 ###############################################
 
