@@ -149,24 +149,25 @@ MESSAGE(STATUS "-------- FILE OPT END --------")
 
 MESSAGE(STATUS "-------- DIRPROPERTY --------")
 # GET_DIRECTORY_PROPERTY 获取的常见目录属性：
-#   DEFINED_VARIABLES - 获取在当前目录的 CMakeLists.txt 文件中定义的所有变量的列表。
-#   INCLUDE_DIRECTORIES - 获取为当前目录设置的包含目录列表。
-#   LINK_DIRECTORIES - 获取为当前目录设置的链接目录列表。
-#   COMPILE_DEFINITIONS - 获取为当前目录设置的编译定义列表。
-#   COMPILE_OPTIONS - 获取为当前目录设置的编译选项列表。
-#   DEFINITIONS - 获取为当前目录设置的宏定义列表（包括 -D 标志）。
-#   CACHE_VARIABLES - 获取在 CMake 缓存中定义的所有变量的列表。
-#   DIRECTORY - 获取当前处理的 CMakeLists.txt 文件的目录路径。
-#   SOURCE_DIR - 获取源的目录路径。
-#   BINARY_DIR - 获取二进制文件的目录路径。
-#   CMAKE_HOME_DIRECTORY - 获取 CMake 主目录的路径，即运行 CMake 的顶层项目的路径。
-#   CMAKE_CURRENT_SOURCE_DIR - 获取当前源代码目录的路径。
-#   CMAKE_CURRENT_BINARY_DIR - 获取当前二进制目录的路径。
-#   CMAKE_CURRENT_LIST_DIR - 获取包含当前处理的 CMakeLists.txt 文件的目录的路径。
-#   CMAKE_CURRENT_LIST_FILE - 获取当前处理的 CMakeLists.txt 文件的完整路径。
-#   CMAKE_CURRENT_LIST_LINE - 获取当前处理的 CMakeLists.txt 文件中的行号。
+#   COMPILE_DEFINITIONS：获取当前目录下定义的编译器宏，这些宏会添加到编译命令中。
+#   COMPILE_OPTIONS：获取当前目录下添加的编译器选项。
+#   INCLUDE_DIRECTORIES：获取当前目录下设置的包含目录，用于头文件的搜索。
+#   LINK_DIRECTORIES：获取当前目录下设置的链接目录，用于库文件的搜索。
+#   DEFINITIONS：获取当前目录下定义的宏，包括编译器和链接器宏。
+#   LINK_LIBRARIES：获取当前目录下链接的库列表。
+#   DEFINED_VARIABLES：获取当前目录下定义的 CMake 变量列表。
+#   ADDITIONAL_MAKE_CLEAN_FILES：获取当前目录下指定的额外清理文件。
+#   SOURCE_FILES：获取当前目录下的源文件列表。
+#   HEADER_FILES：获取当前目录下的头文件列表。
+#   BINARY_DIR：获取当前目录的构建目录（通常是 CMakeFiles 目录）。
+#   DIRECTORY：获取当前目录的路径。
+#   CMAKE_INCLUDE_CURRENT_DIR：检查是否为当前目录设置了 INCLUDE_DIRECTORIES。
+#   CMAKE_MSVCIDE_RUN_PATH：获取 MSVC IDE 使用的运行路径。
+ADD_DEFINITIONS(-DMY_MACRO=1)
+GET_DIRECTORY_PROPERTY(CMP_DEFS COMPILE_DEFINITIONS)
+MESSAGE(STATUS "CMP_DEFS: " ${CMP_DEFS})
+
 GET_DIRECTORY_PROPERTY(M_BINARY_DIR BINARY_DIR)
-# 打印获取到的变量列表
 MESSAGE(STATUS "M_BINARY_DIR: " ${M_BINARY_DIR})
 MESSAGE(STATUS "-------- DIRPROPERTY END --------")
 
