@@ -408,6 +408,17 @@ endif (USE_MYMATH)
 # add git info
 ###############################################
 
+# EXECUTE_PROCESS(
+#     COMMAND <shell_command> # 替换为你的 shell 指令
+#     WORKING_DIRECTORY <working_directory> # 可选，指定工作目录
+#     TIMEOUT <timeout> # 可选，指定超时时间
+#     RESULT_VARIABLE result # 可选，获取执行结果的状态码
+#     OUTPUT_VARIABLE output # 可选，获取标准输出
+#     ERROR_VARIABLE error # 可选，获取错误输出
+#     OUTPUT_STRIP_TRAILING_WHITESPACE # 可选，去除标准输出的尾部空格
+#     ERROR_STRIP_TRAILING_WHITESPACE # 可选，去除错误输出的尾部空格
+# )
+
 #-- ver 1 直接由CMake写文件
 FIND_PACKAGE(Git)
 # 生成版本描述字符串类似 TAG-X-gHASH
