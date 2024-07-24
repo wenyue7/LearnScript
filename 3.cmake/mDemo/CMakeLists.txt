@@ -772,8 +772,17 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 ###############################################
 # add test
 ###############################################
-# CMake 提供了一个称为 CTest 的测试工具。我们要做的只是在项目根目录的 CMakeLists 文件中
-# 调用一系列的 add_test 命令
+# CMake 提供了一个称为 CTest 的测试工具。
+#
+# 生成ctest测试：
+# 在项目根目录的 CMakeLists 文件中调用一系列的 add_test 命令
+#
+# 运行ctest测试：
+# ctest [-C <Release/Debug> -VV] 直接执行ctest或者添加相应参数
+# 其中:
+#     -C指定了配置类型（Debug/Release）
+#     -VV选项提供了详细的输出，可以看到测试的执行情况
+
 # 启用测试
 ENABLE_TESTING()
 
