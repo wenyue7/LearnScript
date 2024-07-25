@@ -1911,7 +1911,9 @@ funWithParam 1 2 3 4 5 6 7 8 9 34 73
 
 # Shell 输入/输出重定向
 
-大多数 UNIX 系统命令从你的终端接受输入并将所产生的输出发送回到您的终端。一个命令通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是你的终端。同样，一个命令通常将其输出写入到标准输出，默认情况下，这也是你的终端。
+大多数 UNIX 系统命令从你的终端接受输入并将所产生的输出发送回到您的终端。一个命令
+通常从一个叫标准输入的地方读取输入，默认情况下，这恰好是你的终端。同样，一个命令
+通常将其输出写入到标准输出，默认情况下，这也是你的终端。
 
 重定向命令列表如下：
 | 命令 | 说明 |
@@ -1925,15 +1927,17 @@ funWithParam 1 2 3 4 5 6 7 8 9 34 73
 | `n <& m` | 将输入文件 m 和 n 合并。 |
 | `<< tag` | 将开始标记 tag 和结束标记 tag 之间的内容作为输入。 |
 
-需要注意的是文件描述符 0 通常是标准输入（STDIN），1 是标准输出（STDOUT），2 是标准错误输出（STDERR）。
+需要注意的是文件描述符 0 通常是标准输入（STDIN），1 是标准输出（STDOUT），2 是
+标准错误输出（STDERR）。
 
 ## 输出重定向
+
 重定向一般通过在命令间插入特定的符号来实现。特别的，这些符号的语法如下所示:
 ```shell
 command1 > file1
 ```
-上面这个命令执行command1然后将输出的内容存入file1。
-注意任何file1内的已经存在的内容将被新内容替代。如果要将新内容添加在文件末尾，请使用>>操作符。
+上面这个命令执行command1然后将输出的内容存入file1。任何file1内的已经存在的内容将
+被新内容替代。如果要将新内容添加在文件末尾，使用>>操作符。
 
 实例
 
@@ -1941,7 +1945,8 @@ command1 > file1
 ```shell
 $ who > users
 ```
-执行后，并没有在终端输出信息，这是因为输出已被从默认的标准输出设备（终端）重定向到指定的文件。
+执行后，并没有在终端输出信息，这是因为输出已被从默认的标准输出设备（终端）重定向
+到指定的文件。
 
 你可以使用 cat 命令查看文件内容：
 ```shell
@@ -1967,6 +1972,7 @@ $
 ```
 
 ## 输入重定向
+
 和输出重定向一样，Unix 命令也可以从文件获取输入，语法为：
 ```shell
 command1 < file1
@@ -1987,27 +1993,32 @@ $ wc -l users
 $  wc -l < users
        2 
 ```
-注意：上面两个例子的结果不同：第一个例子，会输出文件名；第二个不会，因为它仅仅知道从标准输入读取内容。
+注意：上面两个例子的结果不同：第一个例子，会输出文件名；第二个不会，因为它仅仅
+知道从标准输入读取内容。
 ```shell
 command1 < infile > outfile
 ```
 同时替换输入和输出，执行command1，从文件infile读取内容，然后将输出写入到outfile中。
 
 ## 重定向深入讲解
+
 一般情况下，每个 Unix/Linux 命令运行时都会打开三个文件：
 * 标准输入文件(stdin)：stdin的文件描述符为0，Unix程序默认从stdin读取数据。
 * 标准输出文件(stdout)：stdout 的文件描述符为1，Unix程序默认向stdout输出数据。
 * 标准错误文件(stderr)：stderr的文件描述符为2，Unix程序会向stderr流中写入错误信息。
-* 默认情况下，command > file 将 stdout 重定向到 file，`command < file` 将stdin 重定向到 file。
-如果希望 stderr 重定向到 file，可以这样写：
+
+默认情况下，command > file 将 stdout 重定向到 file，`command < file` 将stdin 重定向
+到 file。如果希望 stderr 重定向到 file，可以这样写：
 ```shell
-$ command 2 > file
+$ command 2> file
 ```
+
 如果希望 stderr 追加到 file 文件末尾，可以这样写：
 ```shell
-$ command 2 >> file
+$ command 2>> file
 ```
 2 表示标准错误文件(stderr)。
+
 如果希望将 stdout 和 stderr 合并后重定向到 file，可以这样写：
 ```shell
 $ command > file 2>&1
@@ -2016,12 +2027,85 @@ $ command > file 2>&1
 ```shell
 $ command >> file 2>&1
 ```
+
 如果希望对 stdin 和 stdout 都重定向，可以这样写：
 ```shell
 $ command < file1 >file2
 ```
 command 命令将 stdin 重定向到 file1，将 stdout 重定向到 file2。
 
+## 深入理解 >& 符号
+
+`n>&m`:
+1. 将文件描述符 n 重定向到文件描述符 m，即，将 m 复制到 n
+2. 如果 n 没有其他备份的话，就会丢失
+
+`>&` 实际上是将后面的文件描述符复制给前面的文件描述符。如果 n 或 m 省略了，那么
+它们默认分别指代标准输出（1）和标准错误输出（2）。
+
+保存和恢复的示例
+```shell
+#!/bin/bash
+
+# 保存原始的标准输出和标准错误输出
+# 这里用于保存的数字可以写大一些，避免出现冲突
+exec 1001>&1 1002>&2
+
+# 重定向标准输出到标准错误输出
+exec 1>&2
+
+# 这条消息将被重定向到标准错误输出
+echo "This message is redirected to stderr"
+
+# 恢复原始的标准输出和标准错误输出
+exec 1>&1001 2>&1002
+
+# 关闭临时文件描述符
+exec 1001>&- 1002>&-
+
+# 这条消息将回到标准输出
+echo "This message is back to stdout"
+```
+* This message is redirected to stderr 被输出到标准错误。
+* This message is back to stdout 被输出到标准输出。
+
+
+`>&` 和 `&>`:
+* `>&` 是一个通用的文件描述符重定向操作符，允许你将任意文件描述符的输出重定向到
+       另一个文件描述符
+* `&>` 是一个简写形式，用于同时将标准输出和标准错误输出重定向到同一个文件
+
+举例：
+```shell
+#!/bin/bash
+
+# 使用 >&
+ls non_existing_file > output_1.txt 2>&1
+echo "Using >&: Check output_1.txt for both stdout and stderr"
+
+# 使用 &>
+ls non_existing_file &> output_2.txt
+echo "Using &>: Check output_2.txt for both stdout and stderr"
+```
+运行脚本，会发现 output_1.txt 和 output_2.txt 的内容相同，包含了标准输出和标准
+错误输出的信息。
+
+
+`&-` 是用于关闭文件描述符的语法。通过使用 `&-`，你可以关闭特定的文件描述符，释放
+与其关联的资源。
+* `n>&-`：关闭文件描述符 n
+* `>&-`： 省略 n 时，默认是 1>&-，即关闭标准输出（非常少见，通常不关闭标准输出）
+
+
+## tee 命令
+
+tee 允许用户从标准输入读取数据，并将其内容同时复制到标准输出和一个或多个文件中
+
+举例：
+* `echo "Hello, World!" | tee file.txt`：这将输出“Hello, World!”到屏幕，并将其
+  写入file.txt文件中。使用覆盖模式写入文件
+* `echo "Hello, World!" | tee file.txt`：这将输出“Hello, World!”到屏幕，并将其
+  追加到file.txt文件中。使用追加模式写入文件
 
 ## Here Document
 
@@ -2069,11 +2153,14 @@ www.runoob.com
 ```
 
 ## /dev/null 文件
+
 如果希望执行某个命令，但又不希望在屏幕上显示输出结果，那么可以将输出重定向到 /dev/null：
 ```shell
 $ command > /dev/null
 ```
-/dev/null 是一个特殊的文件，写入到它的内容都会被丢弃；如果尝试从该文件读取内容，那么什么也读不到。但是 /dev/null 文件非常有用，将命令的输出重定向到它，会起到"禁止输出"的效果。
+/dev/null 是一个特殊的文件，写入到它的内容都会被丢弃；如果尝试从该文件读取内容，
+那么什么也读不到。但是 /dev/null 文件非常有用，将命令的输出重定向到它，会起到
+"禁止输出"的效果。
 
 如果希望屏蔽 stdout 和 stderr，可以这样写：
 ```shell
