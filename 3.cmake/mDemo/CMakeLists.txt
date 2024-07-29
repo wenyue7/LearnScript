@@ -224,7 +224,46 @@ SET(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O3")
 # add_compile_options("-Wall")
 # add_compile_options("-Wextra")
 
-# 指定编译器
+# 编译工具/交叉编译相关
+#
+# CMAKE_TOOLCHAIN_FILE 变量：
+# CMAKE_TOOLCHAIN_FILE 是一个 CMake 变量，用于指定一个包含交叉编译环境配置的 .cmake
+# 脚本文件。该文件可以包含交叉编译环境中的各种库和头文件路径、编译器和链接器的路径
+# 等信息，使得 CMake 能够在交叉编译环境中正确地配置和构建工程。
+# 使用方法：
+# 1. 设置变量：CMakeLists.txt 文件中，set(CMAKE_TOOLCHAIN_FILE "<file.cmake>")
+# 2. 命令行参数：通过 -DCMAKE_TOOLCHAIN_FILE=<file.cmake> 指定
+#
+# 注意：
+# 设置位置：在 CMakeLists.txt 文件中，通常需要将 set(CMAKE_TOOLCHAIN_FILE ...)
+#           放在 project() 命令之前，以确保在 CMake 配置项目之前加载工具链文件。
+#
+# 工具链文件（.cmake 脚本）通常包含以下内容：
+# 1. 编译器设置：指定 C/C++ 编译器路径，set(CMAKE_C_COMPILER "<path_to_c_compiler>")、
+#       set(CMAKE_CXX_COMPILER "<path_to_cxx_compiler>")。
+# 2. 库和头文件路径：设置库文件和头文件的搜索路径，以便 CMake 在构建过程中能够找到
+#       它们。这可以通过 include_directories() 和 link_directories() 等命令来实现，
+#       更常见的是在工具链文件中使用 CMAKE_PREFIX_PATH、CMAKE_FIND_ROOT_PATH 等变量
+#       来指定。
+# 3. 系统名称和处理器架构：设置目标系统的名称（如 Linux、Windows）和处理器架构
+#       （如 ARM、x86），以便 CMake 能够正确地配置交叉编译环境。
+#
+# 示例：
+# # 设置目标系统名称和处理器架构
+# set(CMAKE_SYSTEM_NAME Linux)
+# set(CMAKE_SYSTEM_PROCESSOR arm)
+#
+# # 设置编译器
+# set(CMAKE_C_COMPILER /opt/arm-toolchain/bin/arm-linux-gnueabihf-gcc)
+# set(CMAKE_CXX_COMPILER /opt/arm-toolchain/bin/arm-linux-gnueabihf-g++)
+#
+# # 设置库和头文件搜索路径
+# set(CMAKE_FIND_ROOT_PATH /opt/arm-toolchain/arm-linux-gnueabihf)
+# set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+# set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+#
+# 更为简单的方法，也可以直接在cmake中指定编译器
 # SET(CMAKE_C_COMPILER "/usr/bin/arm-linux-gnueabihf-gcc")
 # SET(CMAKE_CXX_COMPILER "/usr/.....")
 
