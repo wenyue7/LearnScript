@@ -17,15 +17,6 @@ export TARGET=armv7a-linux-androideabi
 # export TARGET=i686-linux-android
 # export TARGET=x86_64-linux-android
 
-check_exist()
-{
-    if [ -e "$1" ]; then
-        echo -e "\033[0m\033[1;32m $1 exist \033[0m"
-    else
-        echo -e "\033[0m\033[1;31m $1 not exist \033[0m"
-    fi
-}
-
 
 # Configure and build.
 
