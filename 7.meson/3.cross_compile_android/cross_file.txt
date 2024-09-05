@@ -1,0 +1,26 @@
+[host_machine]
+system = 'linux'           # 目标系统，例如 'windows', 'linux', 'darwin' 等
+cpu_family = 'aarch64'     # CPU 架构，例如 'x86_64', 'arm', 'aarch64'
+cpu = 'cortex-a53'         # 具体 CPU 类型，可以是具体的 CPU 名字
+endian = 'little'          # 字节序，'little' 或 'big'
+
+[binaries]
+# 指定目标系统的 C 编译器
+c = '/home/lhj/work/android/ndk/android-ndk-r25c/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang'
+# 指定目标系统的 C++ 编译器
+cpp = '/home/lhj/work/android/ndk/android-ndk-r25c/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi21-clang++'
+# 指定 ar 工具
+ar = '/home/lhj/work/android/ndk/android-ndk-r25c/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
+# 指定 strip 工具
+strip = '/home/lhj/work/android/ndk/android-ndk-r25c/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip'
+
+# 如果有的话，指定目标平台的 pkg-config
+# pkgconfig = '/path/to/pkg-config'
+
+# [properties]
+# sys_root = '/path/to/sysroot'  # 指定目标系统的 sysroot 路径
+
+# [built-in options]
+# c_args = ['-mfpu=neon']     # 为 C 编译器添加的特定参数
+# cpp_args = ['-mfpu=neon']   # 为 C++ 编译器添加的特定参数
+# prefix = '/usr/local'  # 安装路径的前缀

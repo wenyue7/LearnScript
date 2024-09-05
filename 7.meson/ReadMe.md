@@ -258,3 +258,109 @@ test('basic', exe)
 ```bash
 meson test -C builddir
 ```
+
+# Meson 交叉编译
+
+Meson 是一个现代化的构建系统，支持跨平台构建和交叉编译。要使用 Meson 进行交叉编译，
+主要需要配置一个**交叉编译文件**，定义目标平台的编译器、系统等相关参数。
+
+## 步骤概览
+
+1. **准备交叉编译文件**：定义目标系统的工具链和相关参数。
+2. **创建构建目录**：为交叉编译创建一个单独的构建目录。
+3. **运行 `meson setup` 命令**：配置交叉编译环境。
+4. **编译和安装**：运行 `meson compile` 和 `meson install` 进行编译和安装。
+
+下面是详细的步骤。
+
+## 1. 创建交叉编译文件
+
+交叉编译文件通常命名为 `cross_file.txt` 或者你喜欢的名字，文件内容定义了目标系统
+的编译器、系统库等。文件大致结构如下：
+```ini
+[host_machine]
+system = 'linux'           # 目标系统，例如 'windows', 'linux', 'darwin' 等
+cpu_family = 'arm'         # CPU 架构，例如 'x86_64', 'arm', 'aarch64'
+cpu = 'cortex-a53'         # 具体 CPU 类型，可以是具体的 CPU 名字
+endian = 'little'          # 字节序，'little' 或 'big'
+
+[binaries]
+c = '/path/to/arm-linux-gnueabihf-gcc'       # 指定目标系统的 C 编译器
+cpp = '/path/to/arm-linux-gnueabihf-g++'     # 指定目标系统的 C++ 编译器
+ar = '/path/to/arm-linux-gnueabihf-ar'       # 指定 ar 工具
+strip = '/path/to/arm-linux-gnueabihf-strip' # 指定 strip 工具
+pkgconfig = '/path/to/pkg-config'            # 如果有的话，指定目标平台的 pkg-config
+
+[properties]
+sys_root = '/path/to/sysroot'  # 指定目标系统的 sysroot 路径
+
+[built-in options]
+c_args = ['-mfpu=neon']     # 为 C 编译器添加的特定参数
+cpp_args = ['-mfpu=neon']   # 为 C++ 编译器添加的特定参数
+prefix = '/usr/local'  # 安装路径的前缀
+```
+
+**关键点**：
+- `[host_machine]` 定义了目标系统的架构和信息。
+- `[binaries]` 部分定义了交叉编译时要使用的工具链，例如 C 编译器、C++ 编译器等。
+- `[properties]` 可以为编译器添加额外的编译选项。
+- `[paths]` 指定安装路径的前缀等。
+
+## 2. 创建构建目录
+
+Meson 要求在独立的构建目录中进行编译，因此需要创建一个目录：
+```bash
+mkdir build
+```
+
+## 3. 配置交叉编译环境
+
+使用 `meson setup` 命令配置交叉编译环境，指定交叉编译文件和目标构建目录：
+```bash
+meson setup build --cross-file cross_file.txt
+```
+
+- `build` 是你创建的构建目录。
+- `--cross-file` 指定了刚才编写的交叉编译配置文件。
+
+## 4. 编译和安装
+
+接下来，你可以使用以下命令进行编译和安装：
+```bash
+meson compile -C build  # 进入 build 目录并执行编译
+meson install -C build  # 进入 build 目录并执行安装
+```
+
+## 示例
+
+假设你在 ARM 架构上进行交叉编译，使用 `arm-linux-gnueabihf` 工具链，那么 `cross_file.txt` 文件可能看起来如下：
+
+```ini
+[host_machine]
+system = 'linux'
+cpu_family = 'arm'
+cpu = 'cortex-a53'
+endian = 'little'
+
+[binaries]
+c = '/usr/bin/arm-linux-gnueabihf-gcc'
+cpp = '/usr/bin/arm-linux-gnueabihf-g++'
+ar = '/usr/bin/arm-linux-gnueabihf-ar'
+strip = '/usr/bin/arm-linux-gnueabihf-strip'
+
+[properties]
+sys_root = '/opt/arm-sysroot'
+
+[built-in options]
+c_args = ['-mfpu=neon']
+cpp_args = ['-mfpu=neon']
+prefix = '/usr/local/arm'
+```
+
+## 总结
+
+1. 创建交叉编译文件，定义目标系统的工具链。
+2. 使用 `meson setup` 命令配置交叉编译环境。
+3. 运行 `meson compile` 和 `meson install` 进行编译和安装。
+
+通过这种方式，Meson 可以简便地管理交叉编译工作。

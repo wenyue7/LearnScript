@@ -1,0 +1,19 @@
+[host_machine]
+system = 'linux'
+cpu_family = 'arm'
+cpu = 'cortex-a53'
+endian = 'little'
+
+[binaries]
+c = '/usr/bin/arm-linux-gnueabihf-gcc'
+cpp = '/usr/bin/arm-linux-gnueabihf-g++'
+ar = '/usr/bin/arm-linux-gnueabihf-ar'
+strip = '/usr/bin/arm-linux-gnueabihf-strip'
+
+[properties]
+sys_root = '/opt/arm-sysroot'
+
+[built-in options]
+c_args = ['-mfpu=neon']
+cpp_args = ['-mfpu=neon']
+prefix = '/usr/local/arm'
