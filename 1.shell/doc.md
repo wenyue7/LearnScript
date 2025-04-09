@@ -1538,6 +1538,39 @@ fi
 
 这里中括号用一层或者用两层都可以，一层中括号和两层中括号的区别可以参考常用括号整理的章节
 
+### 简单写法
+
+1. 使用花括号
+使用花括号时，开括号 { 后必须有空格，闭括号 } 前必须有分号或换行
+两个花括号中的命令块，只能执行其中一个
+在当前shell中执行命令组
+`[ condition ] && { command1; command2; command3;} || { command4; command5; command6;}`
+示例：
+```
+[ -e "${HOME}" ] && { echo "ok1"; echo "ok2"; echo "ok3";} || { echo "err1"; echo "err2"; echo "err3";}
+[ -e "/abcdef" ] && { echo "ok1"; echo "ok2"; echo "ok3";} || { echo "err1"; echo "err2"; echo "err3";}
+```
+
+2. 使用括号
+两个括号中的命令块，只能执行其中一个
+在子shell中执行命令组
+`[ condition ] && (command1; command2; command3) || (command4; command5; command6)`
+示例：
+```
+[ -e "${HOME}" ] && (echo "ok1"; echo "ok2"; echo "ok3") || (echo "err1"; echo "err2"; echo "err3")
+[ -e "/abcdef" ] && (echo "ok1"; echo "ok2"; echo "ok3") || (echo "err1"; echo "err2"; echo "err3")
+```
+
+3. 不使用括号
+实际上这种写法是错误的，只能写一条指令，因为只有 command4 取决于前边一条指令是否执行成功，commnad5和command6一定会执行
+`[ condition ] && command1; command2; command3 || command4; command5; command6`
+示例：
+```
+[ -e "${HOME}" ] && echo "ok1"; echo "ok2"; echo "ok3" || echo "err1"; echo "err2"; echo "err3"
+[ -e "/abcdef" ] && echo "ok1"; echo "ok2"; echo "ok3" || echo "err1"; echo "err2"; echo "err3"
+```
+
+
 ## for 循环
 
 与其他编程语言类似，Shell支持for循环。
