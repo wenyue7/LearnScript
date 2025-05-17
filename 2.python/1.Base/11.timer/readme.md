@@ -1,0 +1,5 @@
+写了4中方法实现定时器：
+使用time模块
+使用threading模块
+使用sched模块
+使用apscheduler库

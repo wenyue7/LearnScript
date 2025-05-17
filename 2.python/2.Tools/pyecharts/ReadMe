@@ -1,0 +1,19 @@
+pyecharts首页：http://pyecharts.herokuapp.com/
+pyecharts更多内容：https://github.com/pyecharts/pyecharts
+pyecharts画廊：https://github.com/pyecharts/pyecharts-gallery
+
+画图相关链接：
+	https://blog.csdn.net/FG24151110876/article/details/88218069
+	https://blog.csdn.net/xxzj_zz2017/article/details/79601135
+	https://zhuanlan.zhihu.com/p/45202403
+
+遇到的问题：
+cannot import name 'Geo'：
+解决方法：https://blog.csdn.net/LI_AINY/article/details/90041658
+	1. pyecharts常用的几个模块都不能导入
+		cannot import name ‘Geo’ from ‘pyecharts’
+		cannot import name ‘Style’ from ‘pyecharts’
+		cannot import name ‘Bar’ from ‘pyecharts’
+	2. 解决办法，先卸载之前的，然后再下载一个指定版本号的
+		卸载pip uninstall pyecharts
+		重新下载pip install pyecharts==0.5.11
