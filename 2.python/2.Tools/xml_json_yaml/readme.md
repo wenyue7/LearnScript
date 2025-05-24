@@ -270,9 +270,110 @@ service:
   endpoint: /api
 ```
 
----
+### Python 中的常规用法
 
-## **3. YAML vs JSON vs XML 对比**
+安装：
+```
+pip install pyyaml
+```
+
+#### PyYAML 常用函数
+
+导入库：
+
+```python
+import yaml
+```
+
+1. 加载 YAML 文件
+```python
+with open("config.yaml", "r") as f:
+    data = yaml.safe_load(f)
+```
+> `safe_load()` 是推荐方法，只加载基本类型，防止代码执行漏洞。
+
+2. 读取多个文档
+```python
+with open("multi_docs.yaml", "r") as f:
+    for doc in yaml.safe_load_all(f):
+        print(doc)
+```
+
+3. 从字符串读取 YAML
+```python
+s = """
+name: ChatGPT
+version: 4
+"""
+data = yaml.safe_load(s)
+```
+
+4. 保存（写入） YAML 文件
+```python
+data = {
+    'name': 'Alice',
+    'skills': ['Python', 'YAML']
+}
+
+with open("output.yaml", "w") as f:
+    yaml.safe_dump(data, f)
+```
+
+> 默认 `safe_dump` 会按 YAML 标准格式输出。可以加参数控制输出风格：
+
+```python
+yaml.safe_dump(data, f, sort_keys=False, default_flow_style=False)
+```
+
+5. 多文档写入
+```python
+docs = [{'doc': 1}, {'doc': 2}]
+with open("multi.yaml", "w") as f:
+    yaml.dump_all(docs, f)
+```
+
+6. 加载时的自定义类型处理（高级）
+
+用于注册自定义标签或类型处理器：
+
+```yaml
+!!python/tuple [1, 2]
+```
+
+你可以用 `Loader`, `Dumper`, 自定义 `yaml.Loader`, `yaml.Dumper` 来扩展，
+但这通常只在高级应用中才用。
+
+#### 常用技巧
+
+**读取嵌套字段**
+
+```python
+config = yaml.safe_load(open("config.yaml"))
+width = config["input_dirs"][0]["videos"][0]["width"]
+```
+
+**遍历所有路径和视频文件**
+
+```python
+for dir_cfg in config["input_dirs"]:
+    for video in dir_cfg["videos"]:
+        print(dir_cfg["path"], video["name"])
+```
+
+#### 总结：常用函数速查表
+
+| 函数                          | 用途                        |
+| ----------------------------- | --------------------------- |
+| `yaml.safe_load(f)`           | 加载单个 YAML 文档（推荐）  |
+| `yaml.safe_load_all(f)`       | 加载多个 YAML 文档          |
+| `yaml.safe_dump(data, f)`     | 写入 YAML 文档              |
+| `yaml.dump_all([...], f)`     | 写入多个 YAML 文档          |
+| `yaml.load(f, Loader=...)`    | 加载含 Python 对象（不推荐）|
+| `yaml.dump(data, Dumper=...)` | 写入包含复杂对象            |
+
+
+
+## **4. YAML vs JSON vs XML 对比**
 | **特性**          | XML                      | JSON                      | YAML                      |
 |-------------------|--------------------------|---------------------------|---------------------------|
 | **可读性**        | ⭐⭐（标签冗余）         | ⭐⭐⭐（结构严谨）        | ⭐⭐⭐⭐⭐（自然语言风格）|
@@ -296,7 +397,7 @@ service:
 
 ---
 
-## **4. 特殊场景处理**
+## **5. 特殊场景处理**
 ### **XML 特殊场景**
 - **空标签表示**：
   ```xml
@@ -345,7 +446,7 @@ service:
 
 ---
 
-## **5. 何时选择哪种格式？**
+## **6. 何时选择哪种格式？**
 - **选 XML**：
   - 需要文档标记（如 HTML/SVG）。
   - 企业级数据交换（如 SOAP、银行系统）。
