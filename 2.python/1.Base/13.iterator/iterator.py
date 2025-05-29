@@ -30,6 +30,8 @@ for num in Counter(5, 10):
 # 输出: 5 6 7 8 9 10
 
 # 使用生成器函数实现迭代器
+# yield 的作用是暂停函数的执行，并返回一个值（current）。
+# 与 return 不同，yield 不会终止函数，而是让函数进入“挂起”状态，下次调用时继续执行。
 def counter_generator(low, high):
     current = low
     while current <= high:
