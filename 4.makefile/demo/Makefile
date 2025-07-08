@@ -1,6 +1,7 @@
 FLAGS = -Wall -Wextra
 # 生成多个可执行文件
 TARGETs = test test2
+SUBDIRs = subdir1 subdir2
 
 # SRCs = $(wildcard *.c)
 SRCs = mfunc.c \
@@ -49,8 +50,8 @@ TARGET2 = test2
 
 
 
-.PHONY : all
-all : $(TARGETs)
+.PHONY : all $(SUBDIRs)
+all : $(TARGETs) $(SUBDIRs)
 
 $(TARGET) : $(OBJs)
 	gcc -o $@ $^
@@ -64,8 +65,22 @@ $(TARGET2) : $(OBJs2)
 $(OBJs2) :
 	gcc $(MCRODEF) -c $(subst .o,.c,$@) -o $@
 
+
+# 在一个主 Makefile 中执行子目录中的 Makefile，你可以使用 make -C 命令，它会切换
+# 到子目录执行那个目录下的 Makefile。
+#
+# 使用 $(MAKE) 而不是直接用 make 是更安全的方式，它能传递一些有用的变量（如并行
+# 标志 -j）
+#
+# make -f 是 make 命令的一个选项，用来指定使用哪个 Makefile 文件来执行构建任务。
+$(SUBDIRs):
+	$(MAKE) -C $@
+
 .PHONY : clean
 clean :
 	-rm $(OBJs)
 	-rm $(OBJs2)
 	-rm $(TARGETs)
+	@for dir in $(SUBDIRs); do \
+		$(MAKE) -C $$dir clean; \
+	done
