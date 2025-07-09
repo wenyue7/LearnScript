@@ -277,6 +277,124 @@ make时，所有的Makefile都会受到它的影响，这绝不是你想看到�
 为了告诉大家，也许有时候你的Makefile出现了怪事，那么你可以看看当前环境中有没有
 定义这个变量。
 
+## 常用内置变量（系统宏）
+
+常用的 Makefile 内置变量（系统宏）
+
+| 变量名                 | 含义                                                            |
+| ---------------------- | --------------------------------------------------------------- |
+| `MAKEFILE_LIST`        | 当前已读取的 Makefile 文件列表（包含主文件和所有 `include` 的） |
+| `MAKE`                 | 当前正在使用的 `make` 程序名（通常是 `make`）                   |
+| `MAKECMDGOALS`         | 用户在命令行输入的目标（如 `make all clean` 中的 `all clean`）  |
+| `CURDIR`               | 当前工作目录（自动设置为 `pwd`，可被覆盖）                      |
+| `.DEFAULT_GOAL`        | 默认构建目标（默认是第一个目标）                                |
+| `.RECIPEPREFIX`        | 指定命令行前缀（默认为 tab，可以修改）                          |
+| `.SHELLFLAGS`          | 传递给 shell 的参数（默认是 `-c`）                              |
+| `SHELL`                | 使用的 shell（默认是 `/bin/sh`）                                |
+| `MAKELEVEL`            | `make` 嵌套调用的层级深度，从 0 开始                            |
+| `MFLAGS` / `MAKEFLAGS` | 当前 `make` 所使用的所有命令行参数（如 `-j`、`-k` 等）          |
+| `VPATH`                | 搜索依赖文件的目录路径                                          |
+
+
+**举例说明**
+
+* `MAKEFILE_LIST`
+
+这个变量记录了 Makefile 解析过程中加载过的所有文件。
+
+```makefile
+$(info Makefiles loaded so far: $(MAKEFILE_LIST))
+```
+
+假设你有多个 `include` 的子 Makefile，它会依次列出：
+
+```text
+Makefiles loaded so far: main.mk subdir/module.mk
+```
+
+可以用于调试“哪个 Makefile 生效了”。
+
+
+* `MAKECMDGOALS`
+
+表示用户在命令行上指定的目标：
+
+```makefile
+all:
+	echo "Building all"
+
+clean:
+	echo "Cleaning"
+
+print-goal:
+	@echo "User asked for: $(MAKECMDGOALS)"
+```
+
+执行：
+
+```sh
+make clean print-goal
+```
+
+输出：
+
+```sh
+Cleaning
+User asked for: clean print-goal
+```
+
+* `CURDIR`
+
+自动设置为 `pwd` 的值，可以作为路径基准：
+
+```makefile
+BASE := $(CURDIR)
+```
+
+你也可以手动重设它（不推荐）：
+
+```makefile
+CURDIR := /tmp
+```
+
+
+* `MAKE`
+
+推荐用于递归调用：
+
+```makefile
+subdir:
+	$(MAKE) -C subdir
+```
+
+不要写死 `make`，因为有些系统可能使用 `gmake` 或其他变种。
+
+
+* `.RECIPEPREFIX`
+
+默认 Makefile 的命令行前缀是 tab（`\t`），但你可以改成别的字符：
+
+```makefile
+.RECIPEPREFIX := >
+hello:
+> echo Hello, no tabs anymore!
+```
+
+这在某些编辑器中写 tab 比较痛苦时很方便。
+
+
+* `.DEFAULT_GOAL`
+
+你可以设置默认目标（不写 `make xxx` 时的行为）：
+
+```makefile
+.DEFAULT_GOAL := help
+
+help:
+	@echo "Usage: make [build|clean|install]"
+```
+
+
 ## make的工作方式
 
 GNU的make工作时的执行步骤如下：（想来其它的make也是类似）

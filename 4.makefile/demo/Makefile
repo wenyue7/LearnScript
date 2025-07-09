@@ -1,23 +1,30 @@
+WK_DIR := $(CURDIR)
+CUR_MKF_FILE := $(lastword $(MAKEFILE_LIST))
+CUR_MKF_DIR := $(dir $(CUR_MKF_FILE))
+$(info cur wk dir  --> $(WK_DIR))
+$(info MKF LIST    --> $(MAKEFILE_LIST))
+$(info cur mkf dir --> $(CUR_MKF_DIR))
+
 FLAGS = -Wall -Wextra
 # 生成多个可执行文件
-TARGETs = test test2
-SUBDIRs = subdir1 subdir2
+TARGETs = $(CUR_MKF_DIR)/test $(CUR_MKF_DIR)/test2
+SUBDIRs = $(CUR_MKF_DIR)/subdir1 $(CUR_MKF_DIR)/subdir2
 
 # SRCs = $(wildcard *.c)
-SRCs = mfunc.c \
-	   mfunc2.c \
-	   test.c
+SRCs = $(CUR_MKF_DIR)/mfunc.c \
+	   $(CUR_MKF_DIR)/mfunc2.c \
+	   $(CUR_MKF_DIR)/test.c
 OBJs = $(patsubst %.c, %.o, $(SRCs))
 DEPs = $(wildcard *.h)
-TARGET = test
+TARGET = $(CUR_MKF_DIR)/test
 MCRODEF = -D MCRO_TEST -DMCRO_TEST2=\"mcro2\"
 
-SRCs2 = mfunc.c \
-	   mfunc2.c \
-	   test2.c
+SRCs2 = $(CUR_MKF_DIR)/mfunc.c \
+		$(CUR_MKF_DIR)/mfunc2.c \
+		$(CUR_MKF_DIR)/test2.c
 OBJs2 = $(patsubst %.c, %.o, $(SRCs2))
 DEPs2 = $(wildcard *.h)
-TARGET2 = test2
+TARGET2 = $(CUR_MKF_DIR)/test2
 
 # $@ 在模式规则中，表示规则中的目标文件集。如果有多个目标，那么，"$@"就是匹配
 #    目标中模式定义的集合。
